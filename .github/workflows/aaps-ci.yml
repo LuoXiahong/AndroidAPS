@@ -9,6 +9,7 @@ on:
         default: '3.4.2.3'
         type: choice
         options:
+          - master
           # ── 3.4.x (JDK 21) ──────────────────────────────
           - 3.4.2.3
           - 3.4.2.2
@@ -192,6 +193,7 @@ jobs:
           fetch-depth: 0
 
       - name: Fetch selected tag from upstream
+        if: github.event.inputs.tagName != 'master'
         run: |
           git remote add upstream https://github.com/nightscout/AndroidAPS.git || true
           git fetch upstream refs/tags/${{ github.event.inputs.tagName }}:refs/tags/${{ github.event.inputs.tagName }}
@@ -213,6 +215,7 @@ jobs:
           echo "ℹ️ Tag $TAG → JDK $JAVA_VERSION (from jdk-map.json)"
 
       - name: Switch to selected tag
+        if: github.event.inputs.tagName != 'master'
         run: |
           git checkout refs/tags/${{ github.event.inputs.tagName }}
           echo "✅ Checked out tag ${{ github.event.inputs.tagName }}"
